@@ -4,28 +4,17 @@ const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
 const db = require('./db');
+const authRoutes = require('./routes/authRoutes');
 const fileRoutes = require('./routes/fileRoutes');
 const cors = require('cors');
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(fileUpload());
 
-let rootPath = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
-
-
-const commonDirName = 'SidUpload';
-
-const uploadDir = path.join(rootPath, commonDirName);
-
-
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-app.use('/uploads', express.static(uploadDir));
-
+app.use('/api/auth', authRoutes);
 app.use('/api/files', fileRoutes);
 
 const PORT = process.env.PORT || 5000;
